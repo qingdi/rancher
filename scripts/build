@@ -1,5 +1,5 @@
 #!/bin/bash
 set -e
 
-$(dirname $0)/build-server
-$(dirname $0)/build-agent
+$(dirname $0)/build-server $1
+$(dirname $0)/build-agent $1
