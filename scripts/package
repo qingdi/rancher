@@ -31,6 +31,7 @@ fi
 
 docker build --build-arg VERSION=${TAG} --build-arg ARCH=${ARCH} -t ${IMAGE} .
 docker build --build-arg VERSION=${TAG} --build-arg ARCH=${ARCH} -t ${AGENT_IMAGE} -f Dockerfile.agent .
+mkdir -p ../dist
 echo ${IMAGE} > ../dist/images
 echo ${AGENT_IMAGE} >> ../dist/images
 echo Built ${IMAGE} #${AGENT_IMAGE}
