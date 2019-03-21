@@ -6,7 +6,7 @@ source $(dirname $0)/version
 cd $(dirname $0)/..
 
 mkdir -p bin
-[ "$(uname)" != "Darwin" ] && LINKFLAGS="-extldflags -static -s"
+[ "$1" != "Darwin" ] && LINKFLAGS="-extldflags -static -s"
 
 if echo "$VERSION" | grep -q -e '^v.*' ; then 
     UI_INDEX="local"
@@ -17,4 +17,4 @@ RKE_VERSION="$(grep -m1 '^github.com/rancher/rke' vendor.conf | awk '{print $2}'
 # Inject Setting values
 DEFAULT_VALUES="{\"ui-index\":\"${UI_INDEX}\",\"rke-version\":\"${RKE_VERSION}\"}"
 
-CGO_ENABLED=0 go build -i -tags k8s -ldflags "-X main.VERSION=$VERSION -X github.com/rancher/rancher/pkg/settings.InjectDefaults=$DEFAULT_VALUES $LINKFLAGS" -o bin/rancher
+CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -i -tags k8s -ldflags "-X main.VERSION=$VERSION -X github.com/rancher/rancher/pkg/settings.InjectDefaults=$DEFAULT_VALUES $LINKFLAGS" -o bin/rancher
