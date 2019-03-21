@@ -30,12 +30,13 @@ import (
 const (
 	defaultGitlabAPI     = "https://gitlab.com/api/v4"
 	defaultGitlabHost    = "gitlab.com"
-	maxPerPage           = "100"
+	maxPerPage           = "10"
 	gitlabAPI            = "%s%s/api/v4"
 	gitlabLoginName      = "oauth2"
 	accessLevelReporter  = 20
 	accessLevelDeveloper = 30
 	accessLevelMaster    = 40
+	doRequestTimeout     = 120
 )
 
 type client struct {
@@ -112,12 +113,12 @@ func (c *client) CreateHook(pipeline *v3.Pipeline, accessToken string) (string, 
 	}
 	hookURL := fmt.Sprintf("%s/hooks?pipelineId=%s", settings.ServerURL.Get(), ref.Ref(pipeline))
 	opt := &gitlab.AddProjectHookOptions{
-		PushEvents:            gitlab.Bool(true),
-		MergeRequestsEvents:   gitlab.Bool(true),
-		TagPushEvents:         gitlab.Bool(true),
-		URL:                   gitlab.String(hookURL),
+		PushEvents:          gitlab.Bool(true),
+		MergeRequestsEvents: gitlab.Bool(true),
+		TagPushEvents:       gitlab.Bool(true),
+		URL:                 gitlab.String(hookURL),
 		EnableSSLVerification: gitlab.Bool(false),
-		Token:                 gitlab.String(pipeline.Status.Token),
+		Token: gitlab.String(pipeline.Status.Token),
 	}
 
 	url := fmt.Sprintf("%s/projects/%s/hooks", c.API, project)
@@ -432,7 +433,7 @@ func doRequestToGitlab(method string, url string, gitlabAccessToken string, opt 
 		return nil, err
 	}
 	client := &http.Client{
-		Timeout: 15 * time.Second,
+		Timeout: doRequestTimeout * time.Second,
 	}
 	//set to max 100 per page to reduce query time
 	if method == http.MethodGet {
