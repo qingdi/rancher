@@ -36,7 +36,7 @@ const (
 	accessLevelReporter  = 20
 	accessLevelDeveloper = 30
 	accessLevelMaster    = 40
-	doRequestTimeout     = 120
+	doRequestTimeout     = 130
 )
 
 type client struct {
